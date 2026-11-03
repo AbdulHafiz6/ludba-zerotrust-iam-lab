@@ -1,0 +1,66 @@
+
+{
+  "realm": "ludbA-bank",
+  "enabled": true,
+  "displayName": "ludbA Bank Identity Environment",
+  "registrationAllowed": false,
+  "loginWithEmailAllowed": true,
+  "duplicateEmailsAllowed": false,
+  "resetPasswordAllowed": true,
+  "roles": {
+    "realm": [
+      {
+        "name": "system_admin",
+        "description": "Infrastructure administrator"
+      },
+      {
+        "name": "security_analyst",
+        "description": "Security monitoring analyst"
+      },
+      {
+        "name": "database_admin",
+        "description": "Database administrator"
+      },
+      {
+        "name": "auditor",
+        "description": "Read-only compliance auditor"
+      },
+      {
+        "name": "external_vendor",
+        "description": "Approved external vendor"
+      }
+    ]
+  },
+  "groups": [
+    {
+      "name": "IT Operations"
+    },
+    {
+      "name": "Security Operations"
+    },
+    {
+      "name": "Compliance"
+    },
+    {
+      "name": "External Vendors"
+    }
+  ],
+  "clients": [
+    {
+      "clientId": "ludba-portal",
+      "name": "Ludba Enterprise Portal",
+      "enabled": true,
+      "protocol": "openid-connect",
+      "publicClient": true,
+      "standardFlowEnabled": true,
+      "directAccessGrantsEnabled": false,
+      "implicitFlowEnabled": false,
+      "redirectUris": [
+        "http://localhost:8080/*"
+      ],
+      "webOrigins": [
+        "http://localhost:8080"
+      ]
+    }
+  ]
+}
