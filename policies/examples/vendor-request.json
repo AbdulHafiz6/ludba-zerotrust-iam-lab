@@ -1,0 +1,20 @@
+
+{
+  "user": {
+    "id": "VND-001",
+    "name": "External Maintenance Vendor",
+    "active": true,
+    "role": "external_vendor"
+  },
+  "resource": {
+    "id": "maintenance-01",
+    "type": "maintenance_record",
+    "classification": "restricted"
+  },
+  "action": "read",
+  "vendor_access": {
+    "approved": true,
+    "valid": true,
+    "resource_id": "maintenance-01"
+  }
+}
