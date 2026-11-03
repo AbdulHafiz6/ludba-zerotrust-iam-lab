@@ -19,6 +19,11 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
+      - name: Validate Keycloak realm JSON
+        run: |
+          jq -e . keycloak/realm-ludba.json > /dev/null
+          echo "Keycloak realm JSON is valid"
+
       - name: Install Open Policy Agent
         run: |
           curl -fL -o opa \
