@@ -1,0 +1,15 @@
+
+{
+  "user": {
+    "id": "USR-002",
+    "name": "Ludba Internal Auditor",
+    "active": true,
+    "role": "auditor"
+  },
+  "resource": {
+    "id": "audit-01",
+    "type": "audit_report",
+    "classification": "confidential"
+  },
+  "action": "read"
+}
