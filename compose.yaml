@@ -1,0 +1,12 @@
+services:
+  keycloak:
+    image: quay.io/keycloak/keycloak:26.8.2
+    container_name: ludba-keycloak
+    command: ["start-dev", "--import-realm"]
+    env_file:
+      - .env
+    ports:
+      - "127.0.0.1:8080:8080"
+    volumes:
+      - ./keycloak:/opt/keycloak/data/import:ro
+    restart: unless-stopped

@@ -1,0 +1,8 @@
+# Local secrets and environment overrides
+.env
+.env.*
+!.env.example
+
+# Local development state
+*.log
+.DS_Store
