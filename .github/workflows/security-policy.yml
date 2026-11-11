@@ -24,6 +24,19 @@ jobs:
           jq -e . keycloak/realm-ludba.json > /dev/null
           echo "Keycloak realm JSON is valid"
 
+      - name: Validate Keycloak MFA and OIDC security settings
+        run: |
+          jq -e '
+            .otpPolicyType == "totp" and
+            (.defaultRequiredActions | index("CONFIGURE_TOTP") != null) and
+            (.clients[] | select(.clientId == "ludba-portal") |
+              .attributes["pkce.code.challenge.method"] == "S256" and
+              .redirectUris == ["http://localhost:8080/callback"] and
+              .directAccessGrantsEnabled == false and
+              .implicitFlowEnabled == false)
+          ' keycloak/realm-ludba.json > /dev/null
+          echo "Keycloak MFA enrollment and OIDC client settings are valid"
+
       - name: Install Open Policy Agent
         run: |
           curl -fL -o opa \

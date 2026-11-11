@@ -1,4 +1,3 @@
-
 {
   "realm": "ludbA-bank",
   "enabled": true,
@@ -7,43 +6,38 @@
   "loginWithEmailAllowed": true,
   "duplicateEmailsAllowed": false,
   "resetPasswordAllowed": true,
+  "otpPolicyType": "totp",
+  "otpPolicyAlgorithm": "HmacSHA1",
+  "otpPolicyDigits": 6,
+  "otpPolicyPeriod": 30,
+  "otpPolicyCodeReusable": false,
+  "otpPolicyLookAheadWindow": 1,
+  "defaultRequiredActions": ["CONFIGURE_TOTP"],
+  "requiredActions": [
+    {
+      "alias": "CONFIGURE_TOTP",
+      "name": "Configure OTP",
+      "providerId": "CONFIGURE_TOTP",
+      "enabled": true,
+      "defaultAction": true,
+      "priority": 10,
+      "config": {}
+    }
+  ],
   "roles": {
     "realm": [
-      {
-        "name": "system_admin",
-        "description": "Infrastructure administrator"
-      },
-      {
-        "name": "security_analyst",
-        "description": "Security monitoring analyst"
-      },
-      {
-        "name": "database_admin",
-        "description": "Database administrator"
-      },
-      {
-        "name": "auditor",
-        "description": "Read-only compliance auditor"
-      },
-      {
-        "name": "external_vendor",
-        "description": "Approved external vendor"
-      }
+      {"name": "system_admin", "description": "Infrastructure administrator"},
+      {"name": "security_analyst", "description": "Security monitoring analyst"},
+      {"name": "database_admin", "description": "Database administrator"},
+      {"name": "auditor", "description": "Read-only compliance auditor"},
+      {"name": "external_vendor", "description": "Approved external vendor"}
     ]
   },
   "groups": [
-    {
-      "name": "IT Operations"
-    },
-    {
-      "name": "Security Operations"
-    },
-    {
-      "name": "Compliance"
-    },
-    {
-      "name": "External Vendors"
-    }
+    {"name": "IT Operations", "realmRoles": ["system_admin", "database_admin"]},
+    {"name": "Security Operations", "realmRoles": ["security_analyst"]},
+    {"name": "Compliance", "realmRoles": ["auditor"]},
+    {"name": "External Vendors", "realmRoles": ["external_vendor"]}
   ],
   "clients": [
     {
@@ -55,12 +49,14 @@
       "standardFlowEnabled": true,
       "directAccessGrantsEnabled": false,
       "implicitFlowEnabled": false,
-      "redirectUris": [
-        "http://localhost:8080/*"
-      ],
-      "webOrigins": [
-        "http://localhost:8080"
-      ]
+      "serviceAccountsEnabled": false,
+      "authorizationServicesEnabled": false,
+      "redirectUris": ["http://localhost:8080/callback"],
+      "webOrigins": ["http://localhost:8080"],
+      "attributes": {
+        "pkce.code.challenge.method": "S256",
+        "post.logout.redirect.uris": "http://localhost:8080/*"
+      }
     }
   ]
 }
