@@ -1,4 +1,3 @@
-
 {
   "user": {
     "id": "VND-001",
@@ -14,7 +13,10 @@
   "action": "read",
   "vendor_access": {
     "approved": true,
-    "valid": true,
+    "expires_at_epoch": 1798761600,
     "resource_id": "maintenance-01"
+  },
+  "context": {
+    "evaluated_at_epoch": 1794355200
   }
 }
