@@ -21,8 +21,9 @@ jobs:
 
       - name: Validate Keycloak realm JSON
         run: |
-          jq -e . keycloak/realm-ludba.json > /dev/null
-          echo "Keycloak realm JSON is valid"
+          jq -e . keycloak/ludbA-bank-realm.json > /dev/null
+          jq -e '.realm == "ludbA-bank"' keycloak/ludbA-bank-realm.json > /dev/null
+          echo "Keycloak startup-import realm JSON is valid"
 
       - name: Validate Keycloak MFA and OIDC security settings
         run: |
@@ -34,8 +35,14 @@ jobs:
               .redirectUris == ["http://localhost:8080/callback"] and
               .directAccessGrantsEnabled == false and
               .implicitFlowEnabled == false)
-          ' keycloak/realm-ludba.json > /dev/null
+          ' keycloak/ludbA-bank-realm.json > /dev/null
           echo "Keycloak MFA enrollment and OIDC client settings are valid"
+
+      - name: Validate Docker Compose configuration
+        run: |
+          cp .env.example .env
+          docker compose config --quiet
+          echo "Docker Compose configuration is valid"
 
       - name: Install Open Policy Agent
         run: |
