@@ -1,15 +1,23 @@
-
 {
-  "user": {
-    "id": "USR-001",
-    "name": "Ludba System Administrator",
+  "identity": {
+    "subject": "USR-001",
+    "issuer": "http://localhost:8080/realms/ludbA-bank",
+    "client_id": "ludba-portal",
     "active": true,
-    "role": "system_admin"
+    "roles": ["system_admin"],
+    "auth_strength": {
+      "mfa_verified": true,
+      "method": ["password", "otp"]
+    }
   },
   "resource": {
     "id": "server-01",
     "type": "server",
     "classification": "restricted"
   },
-  "action": "admin"
+  "action": "admin",
+  "context": {
+    "evaluated_at_epoch": 1794355200,
+    "request_id": "simulated-admin-request-001"
+  }
 }
