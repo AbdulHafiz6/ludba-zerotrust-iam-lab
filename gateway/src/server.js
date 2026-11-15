@@ -1,5 +1,5 @@
 import express from "express";
-import { createRemoteJWKSet, jwtVerify } from "jose";
+import { createAccessTokenVerifier } from "./token-verifier.js";
 import { loadConfig } from "./config.js";
 import { normalizeIdentity } from "./claims.js";
 import { evaluatePolicy } from "./opa-client.js";
@@ -9,11 +9,7 @@ const app = express();
 app.disable("x-powered-by");
 app.use(express.json({ limit: "8kb", strict: true }));
 
-const jwks = createRemoteJWKSet(new URL(config.jwksUri), {
-  timeoutDuration: 2000,
-  cooldownDuration: 30000,
-  cacheMaxAge: 300000
-});
+const verifyAccessToken = createAccessTokenVerifier(config);
 
 const allowedActions = new Set(["read", "write", "admin"]);
 
@@ -32,16 +28,7 @@ app.post("/v1/authorize", async (req, res) => {
 
   let payload;
   try {
-    const verified = await jwtVerify(match[1], jwks, {
-      issuer: config.issuer,
-      audience: config.audience,
-      algorithms: config.algorithms,
-      clockTolerance: 5,
-      requiredClaims: ["sub", "iss", "exp", "iat"]
-    });
-    payload = verified.payload;
-    if (payload.azp !== config.allowedClientId) return unauthorized(res);
-    if (payload.typ && payload.typ !== "Bearer") return unauthorized(res);
+    payload = await verifyAccessToken(match[1]);
   } catch {
     return unauthorized(res);
   }
