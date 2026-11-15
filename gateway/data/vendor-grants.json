@@ -1,0 +1,7 @@
+{
+  "lab-vendor-001:maintenance-01": {
+    "approved": true,
+    "resource_id": "maintenance-01",
+    "expires_at_epoch": 2000000000
+  }
+}
