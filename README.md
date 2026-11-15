@@ -17,13 +17,15 @@ Every request is denied unless an explicit policy rule allows it. Roles are cons
 
 | Role | Permitted scope |
 |---|---|
-| system_admin | Read, write and admin on managed server, identity configuration and policy configuration resources |
-| security_analyst | Read security logs |
-| database_admin | Read and write database resources |
-| auditor | Read audit reports |
-| external_vendor | Read only the specifically approved resource, before its access expiry |
+| system_admin | MFA-protected read, write and admin on managed server, identity configuration and policy configuration resources |
+| security_analyst | MFA-protected read access to security logs |
+| database_admin | MFA-protected read and write access to database resources |
+| auditor | MFA-protected read access to audit reports |
+| external_vendor | MFA-protected, read-only access to the specifically approved resource, before its access expiry |
 
-Public resources are readable by active identities. This does not grant access to non-public resources.
+Public resources are readable by active identities and do not require a role, but remain read-only. All role-based access to non-public resources requires verified MFA evidence in the normalized policy input. Missing MFA evidence results in denial. The gateway must derive that evidence from a tested Keycloak authentication flow; TOTP enrollment alone is not proof that MFA was completed for a login.
+
+OPA now consumes a normalized `identity` object containing an issuer-scoped subject, active status, an array of allowlisted roles, and authentication-strength evidence. The gateway—not the browser—must construct this object after validating the access token. See the [OIDC token validation specification](docs/oidc-token-validation-spec.md).
 
 ## Keycloak identity configuration
 
@@ -66,7 +68,7 @@ Vendor authorization requires an active vendor identity, explicit approval, a ma
 
 Trust boundary: context.evaluated_at_epoch must be injected by the trusted policy gateway or authorization service from server time. It must never be accepted from an end-user-controlled request. The sample vendor request is a test fixture only.
 
-The policy compares Unix epoch seconds and denies access at the exact expiry instant.
+The policy compares Unix epoch seconds and denies access at the exact expiry instant. Vendor requests also require verified MFA evidence and a matching resource identifier.
 
 ## Repository layout
 
@@ -94,6 +96,12 @@ opa eval --data policies/access.rego --input examples/vendor-request.json "data.
 ```
 
 The GitHub Actions workflow validates realm JSON, checks selected TOTP and OIDC client settings, validates Docker Compose configuration, validates Rego syntax and runs the automated policy test suite on pushes and pull requests targeting main.
+
+## OPA identity contract and MFA enforcement
+
+The policy input has been migrated from the legacy `input.user.role` structure to `input.identity`. Roles are represented as an array to support explicitly assigned multiple roles. Each role grants only its defined resource/action scope. All role-based access to non-public resources requires `identity.auth_strength.mfa_verified == true`. Public resources remain active-identity, read-only.
+
+The Rego test suite covers positive and negative authorization paths, including inactive identities, missing MFA evidence, unknown roles, legacy input rejection, role scope, vendor approval, resource matching and expiry. Example JSON files are simulated fixtures; their MFA fields are not evidence of a real Keycloak login.
 
 ## OIDC-to-OPA integration design
 
