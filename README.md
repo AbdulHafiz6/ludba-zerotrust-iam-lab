@@ -97,7 +97,10 @@ The GitHub Actions workflow validates realm JSON, checks selected TOTP and OIDC 
 
 ## OIDC-to-OPA integration design
 
-The proposed trust boundaries, token-validation requirements, normalized authorization input contract, threat model and implementation sequence are documented in [docs/oidc-opa-trust-architecture.md](docs/oidc-opa-trust-architecture.md). This is an architecture baseline only; the gateway and end-to-end integration have not yet been implemented or runtime-verified.
+- [OIDC-to-OPA trust architecture](docs/oidc-opa-trust-architecture.md) — trust boundaries, gateway responsibilities, authorization contract and threat model.
+- [OIDC token validation and claim-mapping specification](docs/oidc-token-validation-spec.md) — JWT verification pipeline, JWKS/key rotation, claim provenance, MFA evidence requirements and negative test matrix.
+
+These are design specifications only; the gateway and end-to-end integration have not yet been implemented or runtime-verified.
 
 ## Simulation boundaries and next steps
 
