@@ -1,15 +1,23 @@
-
 {
-  "user": {
-    "id": "USR-002",
-    "name": "Ludba Internal Auditor",
+  "identity": {
+    "subject": "USR-002",
+    "issuer": "http://localhost:8080/realms/ludbA-bank",
+    "client_id": "ludba-portal",
     "active": true,
-    "role": "auditor"
+    "roles": ["auditor"],
+    "auth_strength": {
+      "mfa_verified": true,
+      "method": ["password", "otp"]
+    }
   },
   "resource": {
     "id": "audit-01",
     "type": "audit_report",
     "classification": "confidential"
   },
-  "action": "read"
+  "action": "read",
+  "context": {
+    "evaluated_at_epoch": 1794355200,
+    "request_id": "simulated-auditor-request-001"
+  }
 }
