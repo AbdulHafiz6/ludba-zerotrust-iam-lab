@@ -95,6 +95,10 @@ opa eval --data policies/access.rego --input examples/vendor-request.json "data.
 
 The GitHub Actions workflow validates realm JSON, checks selected TOTP and OIDC client settings, validates Docker Compose configuration, validates Rego syntax and runs the automated policy test suite on pushes and pull requests targeting main.
 
+## OIDC-to-OPA integration design
+
+The proposed trust boundaries, token-validation requirements, normalized authorization input contract, threat model and implementation sequence are documented in [docs/oidc-opa-trust-architecture.md](docs/oidc-opa-trust-architecture.md). This is an architecture baseline only; the gateway and end-to-end integration have not yet been implemented or runtime-verified.
+
 ## Simulation boundaries and next steps
 
 All identities, resources and access requests in this repository are fictional. No real customer, employee, banking or production data should be used.
