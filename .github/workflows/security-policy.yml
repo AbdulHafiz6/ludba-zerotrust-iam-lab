@@ -38,6 +38,24 @@ jobs:
           ' keycloak/ludbA-bank-realm.json > /dev/null
           echo "Keycloak MFA enrollment and OIDC client settings are valid"
 
+      - name: Validate Keycloak API audience configuration
+        run: |
+          jq -e '
+            (.clients[] | select(.clientId == "ludba-api") |
+              .bearerOnly == true and
+              .standardFlowEnabled == false and
+              .directAccessGrantsEnabled == false and
+              .serviceAccountsEnabled == false) and
+            (.clients[] | select(.clientId == "ludba-portal") |
+              any(.protocolMappers[]?;
+                .name == "ludba-api-audience" and
+                .protocolMapper == "oidc-audience-mapper" and
+                .config["included.client.audience"] == "ludba-api" and
+                .config["access.token.claim"] == "true" and
+                .config["id.token.claim"] == "false"))
+          ' keycloak/ludbA-bank-realm.json > /dev/null
+          echo "Dedicated ludba-api audience and access-token mapper are valid"
+
       - name: Validate Docker Compose configuration
         run: |
           cp .env.example .env
