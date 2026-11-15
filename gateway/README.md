@@ -72,7 +72,7 @@ The caller supplies only the resource identifier and action. The gateway resolve
 
     npm test
 
-The tests cover role allowlisting, identity lifecycle defaults, missing MFA evidence and safe claim lookup. They do not prove JWT verification against a live Keycloak instance or end-to-end OPA enforcement.
+The tests cover role allowlisting, identity lifecycle defaults, missing MFA evidence, safe claim lookup, and cryptographic JWT verification cases using a locally generated test key. JWT tests cover trusted signature, issuer, audience, authorized party, expiry, token profile and unsupported signing algorithm. They do not prove token issuance by the live Keycloak realm or end-to-end OPA enforcement.
 
 ## Limitations
 
