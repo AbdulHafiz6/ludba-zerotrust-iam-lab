@@ -1,9 +1,14 @@
 {
-  "user": {
-    "id": "VND-001",
-    "name": "External Maintenance Vendor",
+  "identity": {
+    "subject": "VND-001",
+    "issuer": "http://localhost:8080/realms/ludbA-bank",
+    "client_id": "ludba-portal",
     "active": true,
-    "role": "external_vendor"
+    "roles": ["external_vendor"],
+    "auth_strength": {
+      "mfa_verified": true,
+      "method": ["password", "otp"]
+    }
   },
   "resource": {
     "id": "maintenance-01",
@@ -17,6 +22,7 @@
     "resource_id": "maintenance-01"
   },
   "context": {
-    "evaluated_at_epoch": 1794355200
+    "evaluated_at_epoch": 1794355200,
+    "request_id": "simulated-vendor-request-001"
   }
 }
