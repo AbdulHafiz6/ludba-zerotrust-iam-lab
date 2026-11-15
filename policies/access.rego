@@ -2,56 +2,72 @@ package access
 
 import rego.v1
 
-# Default deny: no request is authorized unless a rule below matches.
+# Default deny: no request is authorized unless an explicit rule matches.
 default allow := false
 
-# Public resources are readable by active identities.
+# Identity attributes are normalized by the trusted gateway after token
+# verification. Never pass browser-supplied identity data directly to OPA.
+active_identity if {
+    input.identity.active == true
+}
+
+has_role(role) if {
+    input.identity.roles[_] == role
+}
+
+mfa_verified if {
+    input.identity.auth_strength.mfa_verified == true
+}
+
+# Public resources are readable by active identities. Public access does not
+# grant write, update, delete, or administrative permissions.
 allow if {
-    input.user.active == true
+    active_identity
     input.resource.classification == "public"
     input.action == "read"
 }
 
-# System administrators are restricted to explicitly managed infrastructure
-# and identity/policy control-plane resources.
+# All non-public role-based permissions require verified MFA evidence.
+# The gateway must derive this value from the tested Keycloak authentication
+# flow; TOTP enrollment alone is not sufficient.
 allow if {
-    input.user.active == true
-    input.user.role == "system_admin"
+    active_identity
+    has_role("system_admin")
+    mfa_verified
     input.resource.type in {"server", "identity_config", "policy_config"}
     input.action in {"read", "write", "admin"}
 }
 
-# Security analysts may read security logs only.
 allow if {
-    input.user.active == true
-    input.user.role == "security_analyst"
+    active_identity
+    has_role("security_analyst")
+    mfa_verified
     input.resource.type == "security_logs"
     input.action == "read"
 }
 
-# Database administrators may read and write database resources only.
 allow if {
-    input.user.active == true
-    input.user.role == "database_admin"
+    active_identity
+    has_role("database_admin")
+    mfa_verified
     input.resource.type == "database"
     input.action in {"read", "write"}
 }
 
-# Auditors are read-only and limited to audit reports.
 allow if {
-    input.user.active == true
-    input.user.role == "auditor"
+    active_identity
+    has_role("auditor")
+    mfa_verified
     input.resource.type == "audit_report"
     input.action == "read"
 }
 
-# Vendor access requires explicit approval, a matching resource, a numeric
-# expiry, and a trusted evaluation timestamp injected by the policy gateway.
-# input.context.evaluated_at_epoch MUST be server-side trusted context; never
-# accept it directly from an end-user request.
+# Vendor grants are read-only, MFA-protected, resource-bound and time-bound.
+# Approval and evaluation time must be injected by trusted backend services.
 allow if {
-    input.user.active == true
-    input.user.role == "external_vendor"
+    active_identity
+    has_role("external_vendor")
+    mfa_verified
     input.action == "read"
     input.vendor_access.approved == true
     input.vendor_access.resource_id == input.resource.id
