@@ -19,7 +19,7 @@ A fictional, local-only policy enforcement point (PEP) for the ludbA Bank Zero-T
 
 ## Important integration prerequisites
 
-1. Configure a dedicated API audience in Keycloak (the sample is ludba-api) and verify it appears in actual access tokens.
+1. The realm import now defines a bearer-only resource client named `ludba-api` and an access-token audience mapper on `ludba-portal`. Verify that a newly issued access token contains `aud: ludba-api` before relying on the gateway.
 2. Inspect the actual Keycloak access-token claim layout and confirm the authorized-party claim behavior.
 3. Verify realm role claim paths using a real, redacted token.
 4. Configure and test the mandatory password-plus-OTP Browser flow.
@@ -28,6 +28,10 @@ A fictional, local-only policy enforcement point (PEP) for the ludbA Bank Zero-T
 7. Replace the local HTTP issuer/JWKS configuration only with the exact HTTPS issuer and JWKS URLs for a separate deployment profile.
 
 Do not set MFA_ACCEPTED_VALUES based on guesswork. The current example deliberately leaves it empty.
+
+### Applying realm-import changes
+
+Keycloak's startup import does not overwrite a realm that already exists. If the local `ludbA-bank` realm was imported before this audience change, the updated JSON will not automatically modify that existing realm. For a disposable lab, export any evidence you need, then remove and recreate the realm or reset the local Keycloak development data before restarting with `--import-realm`. This is destructive to local realm users and configuration; do not do it if you need to preserve them. Alternatively, apply the API client and audience mapper manually in the Admin Console. After either method, obtain a fresh access token and inspect its `aud` claim.
 
 ## Local development
 
