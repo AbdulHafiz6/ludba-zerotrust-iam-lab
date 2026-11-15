@@ -1,0 +1,8 @@
+{
+  "server-01": {"id": "server-01", "type": "server", "classification": "restricted"},
+  "logs-01": {"id": "logs-01", "type": "security_logs", "classification": "confidential"},
+  "db-01": {"id": "db-01", "type": "database", "classification": "restricted"},
+  "audit-01": {"id": "audit-01", "type": "audit_report", "classification": "confidential"},
+  "notice-01": {"id": "notice-01", "type": "notice", "classification": "public"},
+  "maintenance-01": {"id": "maintenance-01", "type": "maintenance_record", "classification": "restricted"}
+}
